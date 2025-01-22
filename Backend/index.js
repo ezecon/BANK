@@ -9,6 +9,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 //CXgPO7EW886oS39R
+
+
 // MongoDB connection
 mongoose.connect('mongodb+srv://mdeconozzama:CXgPO7EW886oS39R@cluster0.oc0hs.mongodb.net/data?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
@@ -22,20 +24,26 @@ db.once('open', () => {
 });
 
 
-// Import routes
+// register
 const usersRouter = require('./routes/topUser');
 app.use('/api/users', usersRouter);
-
+//login
 const auth = require('./Auth/auth');
 app.use('/api', auth);
-
+//token verify
 const verify = require('./Auth/verifytoken');
 app.use('/api/verifyToken', verify);
 
+
+//loan
 const loan = require('./routes/loan.js');
 app.use('/api/loan', loan);
+
+//deposite
 const deposite = require('./routes/deposite.js');
 app.use('/api/deposite', deposite);
+
+//withdraw
 const withdraw = require('./routes/withdraw.js');
 app.use('/api/withdraw', withdraw);
 

@@ -34,24 +34,27 @@ router.post("/", async (req, res) => {
   }
 });
 
+// GET: Retrieve loan requests
 router.get("/", async (req, res) => {
-  console.log('Request received:', req.query);
+  try {
     const { userID } = req.query;
-    if (!userID) {
-        return res.status(400).send('Missing userID');
-    }
-    try {
-        const result = await DepositModel.find({ userID });
-        if (!result.length) {
-            return res.status(404).send('No deposits found');
-        }
-        res.status(200).json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Server error');
-    }
-});
 
+    let loanRequests;
+
+    // If a userID is provided, filter loan requests by user
+    if (userID) {
+      loanRequests = await LoanRequest.find({ user: userID });
+    } else {
+      // Otherwise, retrieve all loan requests
+      loanRequests = await LoanRequest.find();
+    }
+
+    res.status(200).json(loanRequests);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error retrieving loan requests" });
+  }
+});
 
 
 module.exports = router;
