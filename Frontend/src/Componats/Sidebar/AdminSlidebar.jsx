@@ -45,6 +45,14 @@ import { Link } from "react-router-dom";
             MONEY TRANSFER
           </ListItem>
           </Link>
+          <Link to="balance">
+          <ListItem>
+            <ListItemPrefix>
+              <Cog6ToothIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Balance
+          </ListItem>
+          </Link>
           
         </List>
       </Card>
