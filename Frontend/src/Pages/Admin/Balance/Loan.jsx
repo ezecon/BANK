@@ -5,29 +5,28 @@ import {
     Tab,
     TabPanel,
   } from "@material-tailwind/react";
-import WithdrawHistory from "./WithdrawHistory";
-import WithdrawRequest from "./WithdrawRequest";
+import LoanRequest from "./LoanRequest";
+import LoanStatus from "./LoanStatus";
    
-  export function Withdraw() {
+  export function AdminBalance() {
     const data = [
       {
-        label: "Withdraw History",
-        value: "html",
-        desc: <WithdrawHistory/>,
+        label: "Add Balance",
+        value: "react",
+        desc: <LoanRequest/>,
       },
       {
-        label: "Withdraw Request",
-        value: "react",
-        desc: <WithdrawRequest/>,
+        label: " Withdraw Balance",
+        value: "vue",
+        desc: <LoanStatus/>,
       },
-
  
     ];
    
     return (
       <div className="mt-20">
-        <h1 className="my-10 text-center text-2xl font-bold">Withdraw</h1>
-            <Tabs value="html">
+        <h1 className="my-10 text-center text-2xl font-bold">Balance</h1>
+            <Tabs value="react">
                 <TabsHeader>
                 {data.map(({ label, value }) => (
                     <Tab key={value} value={value}>

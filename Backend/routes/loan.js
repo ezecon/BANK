@@ -31,6 +31,17 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get('/all', async (req, res) => {
+  try {
+    const loanRequests = await LoanRequest.find(); // Retrieve all loan requests
+    res.status(200).json(loanRequests);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error retrieving loan requests" });
+  }
+});
+
+
 // GET: Retrieve loan requests
 router.get("/", async (req, res) => {
   try {
@@ -52,6 +63,33 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: "Error retrieving loan requests" });
   }
 });
+
+
+// Define a PUT route
+// PUT: Approve or update the loan status
+router.put("/approve/:id", async (req, res) => {
+  const { id } = req.params; // Extract the loan request ID from the route
+  const { status } = req.body; // Extract the updated status from the request body
+
+  try {
+    // Find the loan request by ID and update its status
+    const updatedLoanRequest = await LoanRequest.findByIdAndUpdate(
+      id,
+      { status }, // Update the status field
+      { new: true, runValidators: true } // Return the updated document and validate fields
+    );
+
+    if (!updatedLoanRequest) {
+      return res.status(404).json({ message: "Loan request not found" });
+    }
+
+    res.status(200).json({ message: "Loan status updated", updatedLoanRequest });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error updating loan status" });
+  }
+});
+
 
 module.exports = router;
 

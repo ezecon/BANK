@@ -1,22 +1,19 @@
 import { useEffect, useState } from "react";
-import { Button, Input, Alert } from "@material-tailwind/react";
+import { Button, Input } from "@material-tailwind/react";
 import axios from "axios";
-import { useToken } from "../../Componats/Hook/useToken";
 import { useNavigate } from "react-router-dom";
+import { useToken } from "../../../Componats/Hook/useToken";
 
-export default function WithdrawRequest() {
+export default function NewDeposite() {
   const [formData, setFormData] = useState({
-    receiverName: "",
-    receiverAccount: "",
-    amount: "",
+    accountNumber: "",
+    balance: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
   const { token, removeToken } = useToken();
   const navigate = useNavigate();
   const [userID, setUserID] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -44,7 +41,7 @@ export default function WithdrawRequest() {
 
     verifyToken();
   }, [token, navigate, removeToken]);
-  
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -55,16 +52,22 @@ export default function WithdrawRequest() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
-    setSuccess(false);
+
+    if (!formData.accountNumber || formData.balance <= 0) {
+      alert("Please enter a valid account number and balance greater than 0.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const payload = {
         ...formData,
-        sender:userID,
+        userID,
+        check: "add",
       };
-      const response = await axios.post(
-        "http://localhost:8000/api/money-transfer",
+
+      const response = await axios.put(
+        `http://localhost:8000/api/users/balance/${formData.accountNumber}`,
         payload,
         {
           headers: {
@@ -74,16 +77,17 @@ export default function WithdrawRequest() {
       );
 
       if (response.status === 200) {
-        setSuccess(true);
+        alert("Add Balance request submitted successfully!");
         setFormData({
-          receiverName: "",
-          receiverAccount: "",
-          amount: "",
+          accountNumber: "",
+          balance: "",
         });
       }
     } catch (error) {
-      console.error("Error submitting transfer request:", error);
-      setError("Failed to submit the money transfer request. Please try again.");
+      console.error("Error submitting withdrawal request:", error);
+      const message =
+        error.response?.data?.message || "Failed to submit withdrawal request. Please try again.";
+      alert(message);
     } finally {
       setLoading(false);
     }
@@ -92,34 +96,13 @@ export default function WithdrawRequest() {
   return (
     <div className="flex justify-center items-center px-4 mt-20">
       <div className="shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-semibold text-gray-700 mb-6 text-center">
-          Money Transfer Request
-        </h1>
-        {success && (
-          <Alert color="green" className="mb-4">
-            Money Transfer request submitted successfully!
-          </Alert>
-        )}
-        {error && (
-          <Alert color="red" className="mb-4">
-            {error}
-          </Alert>
-        )}
+        <h1 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Withdraw</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            label="Receiver Name"
+            label="Account Number"
             type="text"
-            name="receiverName"
-            value={formData.receiverName}
-            onChange={handleChange}
-            color="blue"
-            required
-          />
-          <Input
-            label="Receiver Account Number"
-            type="text"
-            name="receiverAccount"
-            value={formData.receiverAccount}
+            name="accountNumber"
+            value={formData.accountNumber}
             onChange={handleChange}
             color="blue"
             required
@@ -127,8 +110,8 @@ export default function WithdrawRequest() {
           <Input
             label="Amount"
             type="number"
-            name="amount"
-            value={formData.amount}
+            name="balance"
+            value={formData.balance}
             onChange={handleChange}
             color="blue"
             required

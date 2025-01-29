@@ -4,19 +4,15 @@ import {
     List,
     ListItem,
     ListItemPrefix,
-    ListItemSuffix,
-    Chip,
   } from "@material-tailwind/react";
   import {
     PresentationChartBarIcon,
     ShoppingBagIcon,
     Cog6ToothIcon,
-    InboxIcon,
-    PowerIcon,
   } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
    
-  export function DefaultSidebar() {
+  export function AdminSlidebar() {
     return (
       <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
         <div className="mb-2 p-4">
@@ -25,14 +21,6 @@ import { Link } from "react-router-dom";
           </Typography>
         </div>
         <List>
-       <Link to="profile">
-       <ListItem>
-            <ListItemPrefix>
-              <PowerIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            USER INFO
-          </ListItem>
-       </Link>
        <Link to="loan">
           <ListItem>
             <ListItemPrefix>
@@ -47,17 +35,6 @@ import { Link } from "react-router-dom";
               <ShoppingBagIcon className="h-5 w-5" />
             </ListItemPrefix>
             DEPOSIT
-          </ListItem>
-          </Link>
-          <Link to="balance">
-          <ListItem>
-            <ListItemPrefix>
-              <InboxIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            BALANCE
-            <ListItemSuffix>
-              <Chip value="14" size="sm" variant="ghost" color="blue-gray" className="rounded-full" />
-            </ListItemSuffix>
           </ListItem>
           </Link>
           <Link to="money-transfer">

@@ -44,8 +44,8 @@ const deposite = require('./routes/deposite.js');
 app.use('/api/deposite', deposite);
 
 //withdraw
-const withdraw = require('./routes/withdraw.js');
-app.use('/api/withdraw', withdraw);
+const transfer = require('./routes/withdraw.js');
+app.use('/api/money-transfer', transfer);
 
 
 

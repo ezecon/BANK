@@ -2,22 +2,25 @@ const mongoose = require("mongoose");
 
 const WithdrawRequestSchema = new mongoose.Schema(
   {
-    fullName: {
+    receiverName: {
       type: String,
       required: true,
-      trim: true,
     },
-    picker: {
+    receiverAccount: {
+      type: String,
+      required: true,
+    },
+    sender: {
       type: String,
       required: true,
     },
     amount: {
-      type: String,
+      type: Number,
       required: true,
     },
-    dateOfWithdrawal: {
-      type: Date,
-      required: true,
+    status: {
+      type: String,
+      default: "Pending",
     },
     createdAt: {
       type: Date,

@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: ''
     },
+    balance:{
+        type: Number,
+        default: 0
+    },
     image: {
         type: String,
         default: 'https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png'

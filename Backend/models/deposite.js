@@ -37,15 +37,13 @@ const DepositeRequestSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Approved", "Rejected"],
       default: "Pending",
     },
     createdAt: {
       type: Date,
       default: Date.now,
     },
-  },
-  { timestamps: true }
+  }
 );
 
 

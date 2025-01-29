@@ -1,78 +1,77 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useToken } from "../../Componats/Hook/useToken";
 
+export default function WithdrawHistory() {
+  const [loanRequests, setLoanRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { token, removeToken } = useToken();
 
-const WithdrawHistory = () => {
-  const requirements = [
-    {
-      title: "Personal Information",
-      details: [
-        "Government-issued ID (passport, driver’s license, national ID)",
-        "Proof of address (e.g., utility bills, rental agreement)",
-        "Contact information (phone number and email address)",
-      ],
-    },
-    {
-      title: "Income Proof",
-      details: [
-        "Recent pay stubs or employment verification letter for salaried individuals",
-        "Profit and loss statements for self-employed individuals",
-        "Recent bank statements showing regular income or savings",
-      ],
-    },
-    {
-      title: "Creditworthiness",
-      details: [
-        "A good credit score (typically above 650)",
-        "Credit history showing past loans and repayment behavior",
-      ],
-    },
-    {
-      title: "Loan-Specific Documents",
-      details: [
-        "Purpose of loan (e.g., home purchase, business expansion)",
-        "Details of collateral for secured loans (e.g., property documents)",
-        "Information of co-applicant or guarantor, if required",
-      ],
-    },
-    {
-      title: "Other Financial Information",
-      details: [
-        "Debt-to-income ratio below 40%",
-        "Evidence of savings or other financial assets",
-      ],
-    },
-  ];
+  useEffect(() => {
+    const fetchLoanHistory = async () => {
+      try {
+        if (!token) {
+          console.error("Token is missing");
+          return;
+        }
+
+        // Decode userID from the token or fetch it from your AuthContext
+        const response = await axios.post("http://localhost:8000/api/verifyToken", { token });
+        if (response.status === 200 && response.data.valid) {
+          const userID = response.data.decoded.id;
+
+          // Fetch loan history for the user
+          const loanHistoryResponse = await axios.get(`http://localhost:8000/api/money-transfer?userID=${userID}`);
+          setLoanRequests(loanHistoryResponse.data);
+        } else {
+          console.error("Invalid token");
+          removeToken();
+        }
+      } catch (error) {
+        console.error("Error fetching loan history:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLoanHistory();
+  }, [token, removeToken]);
+
+  if (loading) {
+    return <div className="text-center mt-20">Loading loan history...</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-3xl font-bold text-center mb-6">
-          Loan Requirements
-        </h1>
-        <p className="text-gray-600 text-center mb-4">
-          Here's what you need to apply for a loan.
-        </p>
-        <ul className="space-y-6">
-          {requirements.map((section, index) => (
-            <li key={index} className="border-b pb-4">
-              <h2 className="text-xl font-semibold text-blue-600 mb-2">
-                {section.title}
-              </h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                {section.details.map((detail, idx) => (
-                  <li key={idx}>{detail}</li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-6 text-center">
-          <p className="text-gray-500 text-sm">
-            Ensure you review the lender's terms and conditions before applying.
-          </p>
+    <div className="p-8">
+      <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Loan History</h1>
+      {loanRequests.length === 0 ? (
+        <p className="text-center text-gray-500">No loan history found.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border-b">Receiver Name</th>
+                <th className="px-4 py-2 border-b">Receiver Account</th>
+                <th className="px-4 py-2 border-b">Loan Amount</th>
+                <th className="px-4 py-2 border-b">Status</th>
+                <th className="px-4 py-2 border-b">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loanRequests.map((loan, index) => (
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="px-4 py-2 border-b">{loan.receiverName}</td>
+                  <td className="px-4 py-2 border-b">{loan.receiverAccount}</td>
+                  <td className="px-4 py-2 border-b">{loan.amount}</td>
+                  <td className="px-4 py-2 border-b">{loan.status}</td>
+                  <td className="px-4 py-2 border-b">{new Date(loan.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </div>
+      )}
     </div>
   );
-};
-
-export default WithdrawHistory;
+}

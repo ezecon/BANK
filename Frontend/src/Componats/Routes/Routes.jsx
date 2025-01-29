@@ -7,7 +7,12 @@ import Login from "../../Pages/Login/Login";
 import Register from "../../Pages/Register/Register";
 import { Deposite } from "../../Pages/Deposite/Deposite";
 import Balance from "../../Pages/Balance/Balance";
-import { Withdraw } from "../../Pages/Withdraw/Withdraw";
+import { Transfer } from "../../Pages/Withdraw/Transfer";
+import AdminMain from "../Main/AdminMain";
+import { AdminLoan } from "../../Pages/Admin/Loan/Loan";
+import { AdminMoneyTransfer } from "../../Pages/Admin/MoneyTranfer/MoneyTransfer";
+import { AdminDeposite } from "../../Pages/Admin/Deposite/Deposite";
+import { AdminBalance } from "../../Pages/Admin/Balance/Loan";
 
 
 const router = createBrowserRouter([
@@ -36,10 +41,36 @@ const router = createBrowserRouter([
                 element: <Balance/>
            },
            { 
-                path:'withdraw',
-                element: <Withdraw/>
+                path:'money-transfer',
+                element: <Transfer/>
            },
         ]
+    },
+    {
+          path:"/admin",
+          element: <AdminMain/>,
+          children:[
+             {
+
+                path:'loan',
+                element: <AdminLoan/>
+             },
+             {
+
+                path:'money-transfer',
+                element: <AdminMoneyTransfer/>
+             },
+             {
+
+                path:'deposite',
+                element: <AdminDeposite/>
+             },
+             {
+
+                path:'balance',
+                element: <AdminBalance/>
+             },
+          ]
     },
     {
      path:"/login",

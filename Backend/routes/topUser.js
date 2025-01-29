@@ -63,4 +63,36 @@ router.put('/:id', async (req, res) => {
       }
 });
 
+router.put("/balance/:id", async (req, res) => {
+    const { id } = req.params; // Extract the loan request ID from the route
+    let { balance, check } = req.body; // Extract the balance and check value from the request body
+  
+    if (check === "dec") {
+      balance = -balance; // Negate balance if check is "dec"
+    }
+  
+    try {
+      // Find the loan request by ID and increment its balance
+      const updatedLoanRequest = await User.findByIdAndUpdate(
+        id,
+        { $inc: { balance: balance } }, // Use $inc to increment the balance
+        { new: true, runValidators: true } // Return the updated document and validate fields
+      );
+  
+      if (!updatedLoanRequest) {
+        return res.status(404).json({ message: "Loan request not found" });
+      }
+  
+      res.status(200).json({
+        message: "Balance updated successfully",
+        updatedLoanRequest,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error updating balance" });
+    }
+  });
+  
+  
+
 module.exports = router;

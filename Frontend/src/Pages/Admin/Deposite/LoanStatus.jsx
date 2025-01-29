@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useToken } from "../../Componats/Hook/useToken";
+import { useToken } from "../../../Componats/Hook/useToken";
 
-export default function OldDeposite() {
+export default function LoanRequest() {
   const [loanRequests, setLoanRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token, removeToken } = useToken();
@@ -15,20 +15,21 @@ export default function OldDeposite() {
           return;
         }
 
-        // Decode userID from the token or fetch it from your AuthContext
+        // Verify token
         const response = await axios.post("http://localhost:8000/api/verifyToken", { token });
         if (response.status === 200 && response.data.valid) {
           const userID = response.data.decoded.id;
 
           // Fetch loan history for the user
-          const loanHistoryResponse = await axios.get(`http://localhost:8000/api/deposite?userID=${userID}`);
-          setLoanRequests(loanHistoryResponse.data);
+          const loanHistoryResponse = await axios.get(`http://localhost:8000/api/deposite/all`);
+          const loanHistory = loanHistoryResponse.data.filter((loan) => loan.status !== "Pending");
+          setLoanRequests(loanHistory);
         } else {
           console.error("Invalid token");
           removeToken();
         }
       } catch (error) {
-        console.error("Error fetching loan history:", error);
+        console.error("Error fetching Deposite history:", error);
       } finally {
         setLoading(false);
       }
@@ -37,8 +38,9 @@ export default function OldDeposite() {
     fetchLoanHistory();
   }, [token, removeToken]);
 
+
   if (loading) {
-    return <div className="text-center mt-20">Loading loan history...</div>;
+    return <div className="text-center mt-20">Loading Deposite history...</div>;
   }
 
   return (
@@ -51,8 +53,7 @@ export default function OldDeposite() {
           <table className="min-w-full bg-white border border-gray-200">
             <thead>
               <tr>
-                <th className="px-4 py-2 border-b">Name</th>
-                <th className="px-4 py-2 border-b">Email</th>                
+              <th className="px-4 py-2 border-b">Email</th>                
                 <th className="px-4 py-2 border-b">Phone</th>
                 <th className="px-4 py-2 border-b">Deposite Amount</th>
                 <th className="px-4 py-2 border-b">Note</th>
@@ -61,15 +62,16 @@ export default function OldDeposite() {
               </tr>
             </thead>
             <tbody>
-              {loanRequests.map((loan, index) => (
-                <tr key={index} className="hover:bg-gray-100">
-                  <td className="px-4 py-2 border-b">{loan.fullName}</td>
+              {loanRequests.map((loan) => (
+                <tr key={loan._id} className="hover:bg-gray-100">
+                   <td className="px-4 py-2 border-b">{loan.fullName}</td>
                   <td className="px-4 py-2 border-b">{loan.email}</td>
                   <td className="px-4 py-2 border-b">{loan.phone}</td>
                   <td className="px-4 py-2 border-b">{loan.depositeAmount}</td>
                   <td className="px-4 py-2 border-b">{loan.notes}</td>
                   <td className="px-4 py-2 border-b">{loan.status}</td>
                   <td className="px-4 py-2 border-b">{new Date(loan.createdAt).toLocaleDateString()}</td>
+
                 </tr>
               ))}
             </tbody>

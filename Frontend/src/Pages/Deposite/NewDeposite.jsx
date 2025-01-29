@@ -69,7 +69,7 @@ export default function NewDeposite() {
         },
       });
       if (response.status === 200) {
-        alert("Loan request submitted successfully!");
+        alert("Deposite request submitted successfully!");
         setFormData({
           fullName: "",
           email: "",
