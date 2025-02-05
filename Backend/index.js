@@ -11,7 +11,7 @@ app.use(cors());
 //CXgPO7EW886oS39R
 
 
-// MongoDB connection
+// MongoDB connection or database connection
 mongoose.connect('mongodb+srv://mdeconozzama:CXgPO7EW886oS39R@cluster0.oc0hs.mongodb.net/data?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
     useUnifiedTopology: true

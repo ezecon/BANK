@@ -17,7 +17,7 @@ import LoanStatus from "./LoanStatus";
         desc: <LoanRequirements/>,
       },
       {
-        label: "Load Request",
+        label: "Loan Request",
         value: "react",
         desc: <LoanRequest/>,
       },
