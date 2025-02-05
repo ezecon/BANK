@@ -96,7 +96,7 @@ export default function NewDeposite() {
   return (
     <div className="flex justify-center items-center px-4 mt-20">
       <div className="shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Withdraw</h1>
+        <h1 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Add Money</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Account Number"
